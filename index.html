@@ -9,7 +9,7 @@
 <body>
   <div id="app">
 
-    <!-- ===== লগইন এলাকা ===== -->
+    <!-- ===== লগইন ===== -->
     <div id="login-section">
       <h2>লগইন</h2>
 
@@ -25,30 +25,26 @@
       <div id="worker-login">
         <h3>কর্মী লগইন</h3>
         <input type="tel" id="worker-phone" placeholder="ফোন নম্বর (যেমন +8801XXXXXXXXX)">
-        <button id="send-otp-btn">WhatsApp OTP পাঠান</button>
-        <div id="otp-area" style="display:none;">
-          <input type="text" id="otp-input" placeholder="OTP কোড">
-          <button id="verify-otp-btn">যাচাই করুন</button>
-        </div>
+        <input type="password" id="worker-pin" placeholder="PIN (অ্যাডমিন প্রদত্ত)">
+        <button id="worker-login-btn">লগইন</button>
       </div>
     </div>
 
-    <!-- ===== মূল অ্যাপ এলাকা (লগইনের পর) ===== -->
+    <!-- ===== মূল অ্যাপ ===== -->
     <div id="main-section" style="display:none;">
       <div id="user-info"></div>
       <button id="logout-btn">লগআউট</button>
 
       <!-- অ্যাডমিন প্যানেল -->
       <div id="admin-panel" style="display:none;">
-        <h3>ম্যানেজার অনুমতি ব্যবস্থাপনা</h3>
-        <div id="manager-list"></div>
+        <h3>দোকান সেটিংস</h3>
+        <div id="shop-list">পার্ট ২-তে লোড হবে</div>
       </div>
 
       <!-- কর্মী প্যানেল -->
       <div id="worker-panel" style="display:none;">
         <h3>আমার ক্যালেন্ডার</h3>
-        <div id="calendar-container"></div>
-
+        <div id="calendar-container">পার্ট ২-তে লোড হবে</div>
         <h3>উপস্থিতি</h3>
         <button id="start-work-btn">কাজ শুরু</button>
         <button id="stop-work-btn">কাজ বন্ধ</button>
