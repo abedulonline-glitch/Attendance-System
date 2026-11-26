@@ -94,3 +94,64 @@ function showWorkerPanel(workerId, data) {
   document.getElementById('user-info').textContent = data.name + ' | ' + data.position;
   // দ্বিতীয় অংশে এখানে ক্যালেন্ডার লোড এবং উপস্থিতি বাটন হবে
 }
+
+// দ্বিতীয় অংশ: ক্যালেন্ডার
+import { collection, query, where, getDocs }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+async function loadCalendar(workerId) {
+  const container = document.getElementById('calendar-container');
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0-11
+
+  // সেই মাসের উপস্থিতি রেকর্ড পান
+  const startDate = new Date(year, month, 1).toISOString().split('T')[0];
+  const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
+
+  const attSnap = await getDocs(query(
+    collection(db, 'attendance'),
+    where('workerId', '==', workerId),
+    where('date', '>=', startDate),
+    where('date', '<=', endDate)
+  ));
+
+  const attMap = {};
+  attSnap.forEach(d => {
+    const data = d.data();
+    attMap[data.date] = data;
+  });
+
+  // ছুটির দিন পান
+  const holSnap = await getDocs(collection(db, 'holidays'));
+  const holidayMap = {};
+  holSnap.forEach(d => {
+    const h = d.data();
+    holidayMap[h.date] = h.name;
+  });
+
+  // সরল ক্যালেন্ডার গ্রিড তৈরি করুন
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let html = `<h3>${year} সালের ${month + 1} মাস</h3><div class="calendar-grid">`;
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    let cls = 'day';
+    let label = day;
+
+    if (holidayMap[dateStr]) {
+      cls += ' holiday';
+      label += `<br><small>${holidayMap[dateStr]}</small>`;
+    } else if (attMap[dateStr]) {
+      const att = attMap[dateStr];
+      if (att.status === 'full') cls += ' present';
+      else if (att.status === 'half') cls += ' half';
+      else if (att.status === 'quarter') cls += ' quarter';
+      else if (att.status === 'absent') cls += ' absent';
+      if (att.overtimeHours > 0) cls += ' overtime';
+    }
+
+    html += `<div class="${cls}">${label}</div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
